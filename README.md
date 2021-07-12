@@ -50,25 +50,25 @@ form('index/get_list', param).then(res =>{
 > request.js封装了默认的请求前、请求失败后的处理  
 > 您也可以通过如下方式配置请求的相关项  
 > ```
-import { opt, setHeader, stopRequest } from "@/assets/js/request.js" 
-/**
- ** 通过 opt.load = false，关闭请求时的loading状态显示
- ** 可在请求完成后通过 opt.load = true，开启请求时的loading状态显示
- ** 通过 opt.loadingText = "正在上传..." 改变加载状态时显示的提示文本
- ** 通过 setHeader 改变请求头
- ** 通过 stopRequest 关闭停止正在请求的所有请求（多用于vant的tab切换）
- **/
+> import { opt, setHeader, stopRequest } from "@/assets/js/request.js" 
+> /**
+>  ** 通过 opt.load = false，关闭请求时的loading状态显示
+>  ** 可在请求完成后通过 opt.load = true，开启请求时的loading状态显示
+>  ** 通过 opt.loadingText = "正在上传..." 改变加载状态时显示的提示文本
+>  ** 通过 setHeader 改变请求头
+>  ** 通过 stopRequest 关闭停止正在请求的所有请求（多用于vant的tab切换）
+>  **/
 > ```  
 
 > * setHeader的使用   
 
 > ```
-/**
- ** 当前版本仅可更改post下的请求头
- ** 第一个参数为修改的请求头内容(String类型)
- ** 第二个参数为新请求头的可用次数(Number/Boole类型) false: 永久可用, true: 可用一次, {Number}: 可用{Number}次
- **/
-setHeader("application/x-www-form-urlencoded;charset=UTF-8", 3);
+> /**
+>  ** 当前版本仅可更改post下的请求头
+>  ** 第一个参数为修改的请求头内容(String类型)
+>  ** 第二个参数为新请求头的可用次数(Number/Boole类型) false: 永久可用, true: 可用一次, {Number}: 可用{Number}次
+>  **/
+> setHeader("application/x-www-form-urlencoded;charset=UTF-8", 3);
 > ```  
 
 > * stopRequest的使用  
