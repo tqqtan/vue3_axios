@@ -74,8 +74,8 @@ setHeader("application/x-www-form-urlencoded;charset=UTF-8", 3);
 > * stopRequest的使用  
 
 > ```
-无需任何参数，终止当前情况下所有请求中的请求
-stopRequest();
+> 无需任何参数，终止当前情况下所有请求中的请求
+> stopRequest();
 > ```  
 
 ### 注意事项
