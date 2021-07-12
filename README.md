@@ -58,8 +58,10 @@ import { opt, setHeader, stopRequest } from "@/assets/js/request.js"
  ** 通过 setHeader 改变请求头
  ** 通过 stopRequest 关闭停止正在请求的所有请求（多用于vant的tab切换）
  **/
-> ```
-> * setHeader的使用  
+> ```  
+
+> * setHeader的使用   
+
 > ```
 /**
  ** 当前版本仅可更改post下的请求头
@@ -67,12 +69,14 @@ import { opt, setHeader, stopRequest } from "@/assets/js/request.js"
  ** 第二个参数为新请求头的可用次数(Number/Boole类型) false: 永久可用, true: 可用一次, {Number}: 可用{Number}次
  **/
 setHeader("application/x-www-form-urlencoded;charset=UTF-8", 3);
-> ```
+> ```  
+
 > * stopRequest的使用  
+
 > ```
 无需任何参数，终止当前情况下所有请求中的请求
 stopRequest();
-> ```
+> ```  
 
 ### 注意事项
 * 本版本封装的request.js中，根据作者项目需求定义了 process.env.VUE_APP_TOKEN，用于定义每个接口都会必须传入的变量，使用时若无相关需求可在request.js中关闭相关配置  
