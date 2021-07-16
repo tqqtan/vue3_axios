@@ -6,6 +6,8 @@ var cancelList = [];
 export var opt = {
     load: true,         //true代表会显示加载状态，false表示关闭加载状态
     loadingText: '',    //加载时提示文本内容
+    codeKey: 'status',  //请求的返回状态码的键(默认是result.data.status != 0, 其中值为 0 时表示请求正确、正常返回)
+    codeValid: 0,       //请求的返回状态码的值(默认是0，非0则表示请求错误)
 };
 var _opt = {
     OnlyOnce: false,
@@ -27,6 +29,11 @@ axios.interceptors.request.use(
         return config;
     },
     error => {
+        //401：超时，404：not found 没找到接口
+        Dialog.alert({
+            title: "错误提示",
+            message: "请求错误，请联系管理员进行处理！(错误内容：" + error + ")"
+        });
         return Promise.reject(error);
     }
 );
@@ -37,6 +44,7 @@ axios.interceptors.response.use(
         return response;
     },
     error => {
+        //500：系统错误，502：系统重启
         opt.load && Toast.clear();
         if (error.message == "interrupt") {
             console.log('已中断请求');
@@ -77,53 +85,67 @@ export function stopRequest(){
     }
 }
 
-export function get(type, params){
-    axiosApi(type, params, 'get')
+export function get(api, params){
+    return axiosApi(api, params, 'get');
 }
 
-export function post(type, params){
-    axiosApi(type, params, 'post')
+export function post(api, params){
+    return axiosApi(api, params, 'post');
 }
 
-export function form(type, params){
-    axiosApi(type, params, 'form')
+export function form(api, params){
+    return axiosApi(api, params, 'form');
 }
 
-function axiosApi(type, params, method) {
-    let token = process.env.VUE_APP_TOKEN;
+export function getUrl(str, obj){
+    let url = process.env.VUE_APP_BASE_API,
+        uri = str.split('/');
+    url += '/index.php?';
+    if (uri.length == 1) {
+        url = url + 'g=Wxapp&m=Release&a=' + str;
+    } else {
+        url += 'g=Wxapp&m=' + uri[0] + '&a=' + uri[1];
+    }
+    if(obj){
+        for (var i in obj) {
+            url += '&' + i + '=' + obj[i];
+        }
+    }
+    url += '&token=' + process.env.VUE_APP_TOKEN;
+    return url;
+}
+
+function axiosApi(api, params, method) {
     if (process.env.NODE_ENV === 'production') {
-        //可在这进行线上环境的不同定义
+        //可在这进行线上环境的不同定义 
     } else {
         //可在这进行非线上环境的不同定义
     }
-    var value = {
-        token: token
-    }
-    if(_opt.OnlyOnce){
+    let url = getUrl(api);
+    if(_opt.OnlyOnce > 0){
         axios.defaults.headers.post["Content-Type"] = _opt.headers;
         if( typeof _opt.OnlyOnce == 'number') _opt.OnlyOnce--;
         else _opt.OnlyOnce = false;
-    }
-    else{
+    }else{
         if(method == 'form'){
             axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded;charset=UTF-8";
             method = 'post';
         }else{
-            axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8"
+            axios.defaults.headers.post["Content-Type"] = "application/json;charset=utf-8";
         }
     }
-    var data = method == "post" ? qs.stringify(Object.assign(value, params)) : Object.assign(value, params)
+    var data = method == "post" ? qs.stringify(params) : params;
     return new Promise((resolve, reject) => {
         axios({
             method: method,
-            url: type,
+            url: url,
             data: data,
             cancelToken: new CancelToken(function executor(c) {
                 cancelList.push(c);
             })
         })
         .then(res => {
-            if (res.status == 0) {
+            if (res[opt.code] == 0) {
                 resolve(res)
             } else {
                 Dialog.alert({
@@ -139,5 +161,5 @@ function axiosApi(type, params, method) {
     })
 }
 export default {
-    opt, setHeader, stopRequest, get, post, form
+    opt, setHeader, stopRequest, get, post, form, getUrl
 }
